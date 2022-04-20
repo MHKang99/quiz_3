@@ -43,6 +43,7 @@ export default function App() {
         />
         <Route path="/auctions/new" component={NewAuctionPage}/>
         {/* <AuthRoute isAuthenticated={user} exact path='/auctions/new' component={NewAuctionPage}></AuthRoute> */}
+        {/* the user in isAuthenticated is null no matter what i am confused */}
         <Route exact path='/auctions/:id' component={AuctionShowPage} />
         <Route path='/auctions' component={AuctionIndexPage} />
       </Switch>
