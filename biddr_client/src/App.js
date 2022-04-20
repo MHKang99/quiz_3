@@ -1,25 +1,51 @@
-import logo from './logo.svg';
 import './App.css';
+import WelcomePage from './components/Welcome';
+import React, { useState, useEffect } from 'react';
+import { BrowserRouter, Route, Switch } from 'react-router-dom';
+import AuthRoute from './components/AuthRoute';
+import NavBar from './components/NavBar';
+import { User } from './requests';
+import AuctionIndexPage from "./components/AuctionIndexPage";
+import SignInPage from './components/SignInPage';
+import AuctionShowPage from "./components/AuctionShowPage";
+import NewAuctionPage from './components/NewAuctionPage';
 
-function App() {
+export default function App() {
+  const [user, setUser] = useState(null);
+
+  useEffect(() => {
+    getCurrentUser();
+  }, [])
+
+  // useEffect(()=> {
+
+  // }, [user])
+
+  const getCurrentUser = () => {
+    return User.current().then(user => {
+      if (user?.id) {
+        // console.log(user.id)
+        setUser(user)
+      }
+    })
+  }
+  console.log(user)
+  const onSignOut = () => { setUser(null) }
+
+
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
-  );
+    <BrowserRouter>
+      <NavBar currentUser={user} onSignOut={onSignOut} />
+      <Switch>
+        <Route path="/welcome" component={WelcomePage} />
+        <Route path='/sign_in'
+          render={(routeProps) => <SignInPage {...routeProps} onSignIn={getCurrentUser} />}
+        />
+        <Route path="/auctions/new" component={NewAuctionPage}/>
+        {/* <AuthRoute isAuthenticated={user} exact path='/auctions/new' component={NewAuctionPage}></AuthRoute> */}
+        <Route exact path='/auctions/:id' component={AuctionShowPage} />
+        <Route path='/auctions' component={AuctionIndexPage} />
+      </Switch>
+    </BrowserRouter>
+  )
 }
-
-export default App;

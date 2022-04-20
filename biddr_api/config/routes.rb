@@ -3,4 +3,17 @@ Rails.application.routes.draw do
 
   # Defines the root path route ("/")
   # root "articles#index"
+
+  namespace :api, defaults: { format: :json } do
+    namespace :v1 do
+      resources :auctions, only: [:create, :index, :show, :update, :destroy] do
+        resources :bids, only: [:create]
+      end
+      resource :session, only: [:create, :destroy]
+      resources :users, only: [:create] do
+        # get('users/current', {to: 'users#current'})
+        get :current, on: :collection #api/v1/users/current
+      end
+    end
+  end
 end
